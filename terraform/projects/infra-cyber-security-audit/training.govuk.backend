@@ -1,0 +1,4 @@
+bucket  = "govuk-training-terraform-state"
+key     = "govuk/infra-cyber-security-audit.tfstate"
+encrypt = true
+region  = "eu-west-2"
