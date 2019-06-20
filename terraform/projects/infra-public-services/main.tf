@@ -539,7 +539,7 @@ resource "aws_lb_listener_rule" "backend_alb_blocked_host_headers" {
 
 module "backend_public_lb_rules" {
   source                 = "../../modules/aws/lb_listener_rules"
-  name                   = "backend"
+  target_group_prefix    = "pub"
   autoscaling_group_name = "${data.aws_autoscaling_group.backend.name}"
   rules_host_domain      = "*"
   vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"
@@ -709,7 +709,7 @@ resource "aws_route53_record" "cache_public_service_cnames" {
 
 module "cache_public_lb_rules" {
   source                 = "../../modules/aws/lb_listener_rules"
-  name                   = "cache"
+  target_group_prefix    = "pub"
   autoscaling_group_name = "${data.aws_autoscaling_group.cache.name}"
   rules_host_domain      = "*"
   vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"

@@ -169,7 +169,7 @@ module "internal_lb" {
 
 module "internal_lb_rules" {
   source                 = "../../modules/aws/lb_listener_rules"
-  name                   = "frontend-internal"
+  target_group_prefix    = "int"
   autoscaling_group_name = "${module.frontend.autoscaling_group_name}"
   rules_host_domain      = "*"
   vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"
