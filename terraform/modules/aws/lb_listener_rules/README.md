@@ -3,7 +3,7 @@
 This module creates Load Balancer listener rules based on Host header and target groups for
 an existing listener resource.
 
-If the parameter `autoscaling_group_name` is non empty, the module also creates an attachment
+If the parameter `autoscaling_group_name` is not empty, the module also creates an attachment
 from each target group to the ASG with the specified name.
 
 Limitations:
@@ -21,7 +21,6 @@ so at the moment only one condition can be specified per rule
 | autoscaling_group_name | Name of ASG to associate with the target group. An empty value does not create any attachment to the LB target group. | string | `` | no |
 | default_tags | Additional resource tags | map | `<map>` | no |
 | listener_arn | ARN of the listener. | string | - | yes |
-| name | Prefix of the target group names. The final name is name-rulename. | string | - | yes |
 | priority_offset | first priority number assigned to the rules managed by the module. | string | `1` | no |
 | rules_host | A list with the values to create Host-header based listener rules and target groups. | list | `<list>` | no |
 | rules_host_domain | Host header domain to append to the hosts in rules_host. | string | `*` | no |
@@ -31,6 +30,7 @@ so at the moment only one condition can be specified per rule
 | target_group_health_check_path_prefix | The prefix destination for the health check request. | string | `/_healthcheck_` | no |
 | target_group_health_check_timeout | The amount of time, in seconds, during which no response means a failed health check. | string | `5` | no |
 | target_group_port | The port on which targets receive traffic. | string | `80` | no |
+| target_group_prefix | Prefix of the target group names. The limit of this variable is 4 characters. The final name is tg_name_prefix-rulename, it's trimmed to 32 characters, that is the max length of the Target Group Name field. | string | - | yes |
 | target_group_protocol | The protocol to use for routing traffic to the targets. | string | `HTTP` | no |
 | vpc_id | The ID of the VPC in which the default target groups are created. | string | - | yes |
 

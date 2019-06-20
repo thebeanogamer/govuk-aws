@@ -4,7 +4,7 @@
 * This module creates Load Balancer listener rules based on Host header and target groups for
 * an existing listener resource.
 *
-* If the parameter `autoscaling_group_name` is non empty, the module also creates an attachment
+* If the parameter `autoscaling_group_name` is not empty, the module also creates an attachment
 * from each target group to the ASG with the specified name.
 *
 * Limitations:
@@ -38,9 +38,9 @@ variable "rules_host_domain" {
   default     = "*"
 }
 
-variable "name" {
+variable "target_group_prefix" {
   type        = "string"
-  description = "Prefix of the target group names. The final name is name-rulename."
+  description = "Prefix of the target group names. The limit of this variable is 4 characters. The final name is tg_name_prefix-rulename, it's trimmed to 32 characters, that is the max length of the Target Group Name field."
 }
 
 variable "priority_offset" {
@@ -105,9 +105,14 @@ variable "target_group_health_check_matcher" {
 # Resources
 #--------------------------------------------------------------
 
+resource "null_resource" "check_target_group_prefix_length" {
+  count                                                                  = "${length(var.target_group_prefix) > 4 ? 1 : 0}"
+  "ERROR: The length of target_group_prefix is longer than 4 characters" = true
+}
+
 resource "aws_lb_target_group" "tg" {
   count                = "${length(var.rules_host)}"
-  name                 = "${replace(format("%.10s-%.21s", var.name, var.rules_host[count.index]), "/-$/", "")}"
+  name                 = "${replace(format("%.4s-%.27s", var.target_group_prefix, var.rules_host[count.index]), "/-$/", "")}"
   port                 = "${var.target_group_port}"
   protocol             = "${var.target_group_protocol}"
   vpc_id               = "${var.vpc_id}"
@@ -125,12 +130,20 @@ resource "aws_lb_target_group" "tg" {
   }
 
   tags = "${var.default_tags}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_autoscaling_attachment" "tg" {
   count                  = "${var.autoscaling_group_name != "" ? length(var.rules_host) : 0}"
   autoscaling_group_name = "${var.autoscaling_group_name}"
   alb_target_group_arn   = "${aws_lb_target_group.tg.*.arn[count.index]}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_lb_listener_rule" "routing" {
@@ -146,6 +159,10 @@ resource "aws_lb_listener_rule" "routing" {
   condition {
     field  = "host-header"
     values = ["${var.rules_host[count.index]}.${var.rules_host_domain}"]
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
