@@ -129,10 +129,11 @@ resource "aws_elb" "licensify-frontend_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  default_tags = {
+  tags = {
     Project         = "${var.stackname}"
-    aws_migration   = "licensify-frontend"
+    aws_migration   = "licensing_frontend"
     aws_environment = "${var.aws_environment}"
+    aws_stackname   = "${var.stackname}"
   }
 }
 
