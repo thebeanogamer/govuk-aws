@@ -41,6 +41,11 @@ variable "master_password" {
   description = "Password of master user on DocumentDB cluster"
 }
 
+variable "router_db_password" {
+  type        = "string"
+  description = "Password to set for the router user/db"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -80,4 +85,15 @@ resource "aws_docdb_cluster" "cluster" {
     Name     = "documentdb-licensify"
     Source   = "app-documentdb"
   }
+}
+
+provider "mongodb" {
+  url = "mongodb://${var.master_username}:${var.master_password}@${aws_docdb_cluster.cluster.endpoint}?ssl=true"
+}
+
+resource "mongodb_user" "router" {
+  database = "router"
+  username = "router"
+  password = "${var.router_db_password}"
+  roles    = ["read", "dbAdmin"]
 }
