@@ -20,6 +20,9 @@ usage() {
   echo 'The directory dump_dir should contain a directory for each database named on'
   echo 'the command line. Each of those directories should contain bson files.'
   echo
+  echo 'The nocleanup option leaves the created mongodump in $TEMP instead of'
+  echo 'deleting it afterwards.'
+  echo
   echo 'In this example, the current directory contains licensify-refdata/*.bson'
   echo 'and licensify/*.bson and we want to compare those against a DocDB:'
   echo
@@ -99,8 +102,8 @@ db_hostname="$1"; shift
 databases="$@"
 db_username="master"
 
-trap cleanup EXIT
 verification_dump_dir="$(mktemp -d)"
+trap cleanup EXIT
 
 echo -n "DB password for ${db_username?} user: "
 read -s db_password
