@@ -9,10 +9,19 @@ echo "[$(date '+%H:%M:%S %d-%m-%Y')] START SNIPPET: deploy-apps"
 # and if not wait for puppet to do its magic (it could take a while)
 WAIT_TIME=600
 while [ $WAIT_TIME -gt 0 ]; do
-  if id deploy; then break; fi
+  if id deploy; then echo "User deploy found at -$WAIT_TIME s"; break; fi
   sleep 1
   ((WAIT_TIME-=1))
 done
-test -f /usr/local/bin/govuk_sync_apps && /usr/local/bin/govuk_sync_apps
+
+WAIT_TIME=600
+while [ $WAIT_TIME -gt 0 ]; do
+  if [ -f '/usr/local/bin/govuk_sync_apps' ]; then echo "/usr/local/bin/govuk_sync_apps found at -$WAIT_TIME s"; break; fi
+  sleep 1
+  ((WAIT_TIME-=1))
+done
+
+/usr/local/bin/govuk_sync_apps
+
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] END SNIPPET: deploy-apps"
 
