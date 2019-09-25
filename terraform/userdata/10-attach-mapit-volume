@@ -23,7 +23,7 @@ DEVICE=$(aws ec2 create-volume \
 # Wait for volume to be created before attaching
 x=0
 while [[ $x -lt 10 ]]; do
-  if ! [[ -z $DEVICE ]] ; then
+  if [[ -z $DEVICE ]] ; then
     sleep 1
   else
     break
