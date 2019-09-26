@@ -21,8 +21,8 @@ DEVICE=$(aws ec2 create-volume \
     --tag-specifications "ResourceType=volume,Tags=[{Key=Device,Value=xvdf},{Key=Name,Value=blue-mapit},{Key=Project,Value=$F_STACKNAME},{Key=aws_migration,Value=$F_MIGRATION},{Key=aws_hostname,Value=$F_HOSTNAME},{Key=aws_stackname,Value=$F_STACKNAME}]" | jq -r '.VolumeId ')
 
 # Wait for volume to be created before attaching
-x=0
-while [[ $x -lt 10 ]]; do
+WAIT_TIME=700
+while [ $WAIT_TIME -gt 0 ]; do
   if [[ -z $DEVICE ]] ; then
     logger "Waiting for volume creation..."
     sleep 1
@@ -30,7 +30,7 @@ while [[ $x -lt 10 ]]; do
     logger "Volume created ... exiting waiting"
     break
   fi
-  x=$((x+1))
+  ((WAIT_TIME-=1))
 done
 
 logger "This is the id of the new volume $DEVICE"
