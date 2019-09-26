@@ -13,11 +13,13 @@ F_MIGRATION=$(facter aws_migration)
 F_STACKNAME=$(facter aws_stackname)
 F_HOSTNAME=$(facter aws_hostname)
 
+AVAILABILITY_ZONE=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone)
+
 # Create blank volume
 DEVICE=$(aws ec2 create-volume \
     --size 20 \
-    --region $REGION \
-    --availability-zone $AWS_DEFAULT_REGION \
+    --region $AWS_DEFAULT_REGION \
+    --availability-zone $AVAILABILITY_ZONE \
     --tag-specifications "ResourceType=volume,Tags=[{Key=Device,Value=xvdf},{Key=Name,Value=blue-mapit},{Key=Project,Value=$F_STACKNAME},{Key=aws_migration,Value=$F_MIGRATION},{Key=aws_hostname,Value=$F_HOSTNAME},{Key=aws_stackname,Value=$F_STACKNAME}]" | jq -r '.VolumeId ')
 
 # Wait for volume to be created before attaching
