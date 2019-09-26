@@ -20,18 +20,20 @@ DEVICE=$(aws ec2 create-volume \
     --availability-zone $AWS_DEFAULT_REGION \
     --tag-specifications "ResourceType=volume,Tags=[{Key=Device,Value=xvdf},{Key=Name,Value=blue-mapit},{Key=Project,Value=$F_STACKNAME},{Key=aws_migration,Value=$F_MIGRATION},{Key=aws_hostname,Value=$F_HOSTNAME},{Key=aws_stackname,Value=$F_STACKNAME}]" | jq -r '.VolumeId ')
 
-logger "This is the id of the new volume $DEVICE"
-
 # Wait for volume to be created before attaching
 x=0
 while [[ $x -lt 10 ]]; do
   if [[ -z $DEVICE ]] ; then
+    logger "Waiting for volume creation..."
     sleep 1
   else
+    logger "Volume created ... exiting waiting"
     break
   fi
   x=$((x+1))
 done
+
+logger "This is the id of the new volume $DEVICE"
 
 logger "[$(date '+%H:%M:%S %d-%m-%Y')] attach-volume: attaching volume to /dev/$DEVICE ..."
 aws ec2 attach-volume --volume-id ${DEVICE} --instance-id $INSTANCE_ID --device /dev/$DEVICE --region $REGION
