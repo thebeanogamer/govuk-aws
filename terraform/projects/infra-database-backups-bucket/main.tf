@@ -252,6 +252,16 @@ resource "aws_s3_bucket" "database_backups" {
 
   # Integration lifecycle specific rules END
 
+  # Lifecycle rule for production and staging
+  lifecycle_rule {
+    id      = "whole_bucket_lifecycle_rule_${var.aws_environment}"
+    prefix  = ""
+    enabled = "${var.integration_only == "false" ? true : false }"
+
+    noncurrent_version_expiration {
+      days = "7"
+    }
+  }
   versioning {
     enabled = true
   }
