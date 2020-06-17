@@ -1,0 +1,4 @@
+bucket  = "govuk-terraform-steppingstone-replatform"
+key     = "pink/app-whitehall-backend.tfstate"
+encrypt = true
+region  = "eu-west-1"

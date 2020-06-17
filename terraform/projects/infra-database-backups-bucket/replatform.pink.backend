@@ -1,0 +1,4 @@
+bucket  = "govuk-terraform-steppingstone-replatform"
+key     = "pink/infra-database-backups-bucket.tfstate"
+encrypt = true
+region  = "eu-west-1"

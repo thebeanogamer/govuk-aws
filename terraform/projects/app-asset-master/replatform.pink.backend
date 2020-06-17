@@ -1,0 +1,4 @@
+bucket  = "govuk-terraform-steppingstone-replatform"
+key     = "pink/app-asset-master.tfstate"
+encrypt = true
+region  = "eu-west-1"
