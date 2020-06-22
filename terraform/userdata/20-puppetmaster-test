@@ -30,7 +30,7 @@ cd /var/govuk || return
 
 # Get git and checkout govuk-aws on the Replatforming branch
 apt-get -y install git
-git clone https://github.com/alphagov/govuk-aws.git && cd govuk-aws && git checkout test-revive
+git clone https://github.com/alphagov/govuk-aws.git && cd govuk-aws && git fetch && git checkout test-revive
 
 # Run the bootstrap script
 /var/govuk/govuk-aws/tools/govuk-puppetmaster-test-bootstrap.sh
