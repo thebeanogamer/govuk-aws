@@ -1,8 +1,8 @@
 #!/bin/bash
 # This snippet replaces aws-push-puppet and aws-copy-puppet-config.sh
 # as part of a new automated bootstrap process based on Terraform
-# SSM secrets store. It is called as 30-puppetmaster-bootstrap from 
-# terraform user_data as defined in govuk-aws-data 
+# SSM secrets store. It is called as 30-puppetmaster-bootstrap from
+# terraform user_data as defined in govuk-aws-data
 set -x
 set -u
 
@@ -70,8 +70,8 @@ set -x
 
 # Clone Puppet repo
 git clone ${GOVUK_GIT_URL}/${GOVUK_PUPPET_REPO}
-cd ${GOVUK_WORKDIR}/${GOVUK_SECRETS_REPO} && git fetch && git checkout test-revive
-
+# In test we want to work on our branch
+cd ${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO} && git fetch && git checkout test-revive
 # Clone secrets repo
 git clone ${GOVUK_GIT_URL}/${GOVUK_SECRETS_REPO}
 cd ${GOVUK_WORKDIR}/${GOVUK_SECRETS_REPO} && git fetch && git checkout test-secrets
