@@ -71,10 +71,10 @@ set -x
 # Clone Puppet repo
 git clone ${GOVUK_GIT_URL}/${GOVUK_PUPPET_REPO}
 # In test we want to work on our branch
-cd ${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO} && git fetch && git checkout test-revive
+cd ${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO} && git fetch && git checkout test-revive && cd ../
 # Clone secrets repo
 git clone ${GOVUK_GIT_URL}/${GOVUK_SECRETS_REPO}
-cd ${GOVUK_WORKDIR}/${GOVUK_SECRETS_REPO} && git fetch && git checkout test-secrets
+cd ${GOVUK_WORKDIR}/${GOVUK_SECRETS_REPO} && git fetch && git checkout test-secrets && cd ../
 
 # Add secrets to puppet repository
 cp -r ${GOVUK_WORKDIR}/${GOVUK_SECRETS_REPO}/puppet_aws/hieradata/* ${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO}/hieradata_aws/
