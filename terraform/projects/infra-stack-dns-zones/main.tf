@@ -55,6 +55,17 @@ variable "root_domain_external_name" {
   default     = "mydomain.external"
 }
 
+variable "puppetmaster_internal_service_names" {
+  type    = "list"
+  default = []
+}
+
+variable "remote_state_infra_root_dns_zones_key_stack" {
+  type        = "string"
+  description = "Override stackname path to infra_root_dns_zones remote state "
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -73,6 +84,16 @@ data "terraform_remote_state" "infra_vpc" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
+    region = "${var.aws_region}"
+  }
+}
+
+data "terraform_remote_state" "infra_root_dns_zones" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_root_dns_zones_key_stack, var.stackname)}/infra-root-dns-zones.tfstate"
     region = "${var.aws_region}"
   }
 }
@@ -105,6 +126,15 @@ resource "aws_route53_record" "external_zone_ns" {
     "${aws_route53_zone.external_zone.name_servers.2}",
     "${aws_route53_zone.external_zone.name_servers.3}",
   ]
+}
+
+resource "aws_route53_record" "puppetmaster_internal_service_names" {
+  count   = "${length(var.puppetmaster_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.puppetmaster_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.puppetmaster_internal_service_names, count.index)}.${var.stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
 }
 
 data "aws_route53_zone" "internal_selected" {

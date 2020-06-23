@@ -416,11 +416,6 @@ variable "publishing_api_internal_service_names" {
   default = []
 }
 
-variable "puppetmaster_internal_service_names" {
-  type    = "list"
-  default = []
-}
-
 variable "rabbitmq_internal_service_names" {
   type    = "list"
   default = []
@@ -1939,19 +1934,6 @@ resource "aws_route53_record" "publishing_api_internal_service_names" {
   name    = "${element(var.publishing_api_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
   records = ["${element(var.publishing_api_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
-}
-
-#
-# puppetmaster
-#
-
-resource "aws_route53_record" "puppetmaster_internal_service_names" {
-  count   = "${length(var.puppetmaster_internal_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(var.puppetmaster_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "CNAME"
-  records = ["${element(var.puppetmaster_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
