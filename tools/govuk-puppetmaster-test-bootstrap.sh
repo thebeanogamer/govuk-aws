@@ -73,8 +73,10 @@ git clone ${GOVUK_GIT_URL}/${GOVUK_PUPPET_REPO}
 # In test we want to work on our branch
 cd ${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO} && git fetch && git checkout test-revive && cd ../
 # Clone secrets repo
-git clone ${GOVUK_GIT_URL}/${GOVUK_SECRETS_REPO}
-cd ${GOVUK_WORKDIR}/${GOVUK_SECRETS_REPO} && git fetch && git checkout test-secrets && cd ../
+echo 'Hello from Richard and Mahmud'
+git clone ${GOVUK_GIT_URL}/${GOVUK_SECRETS_REPO} --branch test-secrets --depth 1
+# cd ${GOVUK_WORKDIR}/${GOVUK_SECRETS_REPO} && git fetch && git checkout test-secrets && cd ../
+echo 'done cloning govuk-secrets 🚀'
 
 # Add secrets to puppet repository
 cp -r ${GOVUK_WORKDIR}/${GOVUK_SECRETS_REPO}/puppet_aws/hieradata/* ${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO}/hieradata_aws/
