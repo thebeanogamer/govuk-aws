@@ -124,5 +124,5 @@ bundle exec rake librarian:install
 cd "${GOVUK_WORKDIR}" || exit
 
 # Self-configure puppet
-puppet apply --verbose --trusted_node_data --hiera_config=/usr/share/puppet/production/current/hiera_aws.yml --modulepath=/usr/share/puppet/production/current/modules:/usr/share/puppet/production/current/vendor/modules/ --manifestdir=/usr/share/puppet/production/current/manifests /usr/share/puppet/production/current/manifests/site.pp >> ${GOVUK_LOGDIR}/govuk_puppet_apply.log 2>&1
+puppet apply --verbose --trusted_node_data --hiera_config=/usr/share/puppet/production/current/hiera_aws.yml --modulepath=/usr/share/puppet/production/current/modules:/usr/share/puppet/production/current/vendor/modules/ --manifestdir=/usr/share/puppet/production/current/manifests /usr/share/puppet/production/current/manifests/site.pp | tee -a ${GOVUK_LOGDIR}/govuk_puppet_apply.log 2>&1
 chown -R deploy:deploy "/usr/share/puppet/production/releases/${RELEASENAME}"
