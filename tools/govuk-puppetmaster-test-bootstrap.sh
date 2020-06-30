@@ -118,7 +118,7 @@ gem install --no-ri --no-rdoc hiera-eyaml-gpg gpgme
 cd "/usr/share/puppet/production/current/" || exit
 
 # Installing Puppet dependencies
-bundle install
+DEBUG_RESOLVER=true bundle install --verbose
 bundle exec rake librarian:install
 
 cd "${GOVUK_WORKDIR}" || exit
