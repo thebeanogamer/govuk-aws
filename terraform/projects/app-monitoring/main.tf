@@ -1,7 +1,7 @@
 /**
 * ## Project: app-monitoring
 *
-* Monitoring node
+* Monitoring node. This is for Icinga.
 */
 variable "aws_region" {
   type        = "string"
