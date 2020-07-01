@@ -74,7 +74,7 @@ git clone ${GOVUK_GIT_URL}/${GOVUK_PUPPET_REPO}
 cd ${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO} && git fetch && git checkout test-revive && cd ../
 # Clone secrets repo
 echo 'Hello from Richard and Mahmud'
-git clone ${GOVUK_GIT_URL}/${GOVUK_SECRETS_REPO} --branch test-secrets --depth 1
+git clone ${GOVUK_GIT_URL}/${GOVUK_SECRETS_REPO} --depth 1
 # cd ${GOVUK_WORKDIR}/${GOVUK_SECRETS_REPO} && git fetch && git checkout test-secrets && cd ../
 echo 'done cloning govuk-secrets 🚀'
 
