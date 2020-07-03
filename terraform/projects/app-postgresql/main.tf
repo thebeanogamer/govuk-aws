@@ -150,6 +150,14 @@ resource "aws_route53_record" "service_record" {
   records = ["${module.postgresql-primary_rds_instance.rds_instance_address}"]
 }
 
+resource "aws_route53_record" "service_stack_record" {
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "postgresql-primary.${var.internal_zone_name}"
+  type    = "CNAME"
+  ttl     = 300
+  records = ["postgresql-primary.${var.stackname}.${var.internal_zone_name}"]
+}
+
 module "postgresql-standby_rds_instance" {
   source = "../../modules/aws/rds_instance"
 
@@ -173,6 +181,14 @@ resource "aws_route53_record" "replica_service_record" {
   type    = "CNAME"
   ttl     = 300
   records = ["${module.postgresql-standby_rds_instance.rds_replica_address}"]
+}
+
+resource "aws_route53_record" "replica_stack_service_record" {
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "postgresql-standby.${var.internal_zone_name}"
+  type    = "CNAME"
+  ttl     = 300
+  records = ["postgresql-standby.${var.stackname}.${var.internal_zone_name}"]
 }
 
 module "alarms-rds-postgresql-primary" {
