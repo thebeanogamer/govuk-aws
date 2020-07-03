@@ -245,11 +245,6 @@ variable "apt_internal_service_names" {
   default = []
 }
 
-variable "backend_redis_internal_service_names" {
-  type    = "list"
-  default = []
-}
-
 variable "backend_internal_service_names" {
   type    = "list"
   default = []
@@ -516,19 +511,6 @@ resource "aws_route53_record" "asset_master_internal_service_names" {
   name    = "${element(var.asset_master_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
   records = ["${element(var.asset_master_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
-}
-
-#
-# Backend-redis
-#
-
-resource "aws_route53_record" "backend_redis_internal_service_names" {
-  count   = "${length(var.backend_redis_internal_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(var.backend_redis_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "CNAME"
-  records = ["${element(var.backend_redis_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 

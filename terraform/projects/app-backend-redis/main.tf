@@ -35,6 +35,11 @@ variable "internal_domain_name" {
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
+variable "backend_redis_internal_service_names" {
+  type    = "list"
+  default = []
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -58,6 +63,15 @@ resource "aws_route53_record" "service_record" {
   type    = "CNAME"
   ttl     = 300
   records = ["${module.backend_redis_cluster.configuration_endpoint_address}"]
+}
+
+resource "aws_route53_record" "backend_redis_internal_service_names" {
+  count   = "${length(var.backend_redis_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.backend_redis_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.backend_redis_internal_service_names, count.index)}.${var.stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
 }
 
 module "backend_redis_cluster" {
