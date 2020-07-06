@@ -97,6 +97,11 @@ variable "instance_type" {
   default     = "t2.medium"
 }
 
+variable "router_backend_internal_service_names" {
+  type    = "list"
+  default = []
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -269,6 +274,15 @@ resource "aws_route53_record" "router-backend_3_service_record" {
   type    = "A"
   records = ["${var.router-backend_3_ip}"]
   ttl     = 300
+}
+
+resource "aws_route53_record" "router_backend_internal_service_names" {
+  count   = "${length(var.router_backend_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.router_backend_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.router_backend_internal_service_names, count.index)}.${var.stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
 }
 
 module "router-backend-3" {
