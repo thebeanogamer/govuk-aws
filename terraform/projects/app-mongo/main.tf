@@ -75,6 +75,11 @@ variable "mongo_3_ip" {
   description = "IP address of the private IP to assign to the instance"
 }
 
+variable "mongo_internal_service_names" {
+  type    = "list"
+  default = []
+}
+
 variable "remote_state_infra_database_backups_bucket_key_stack" {
   type        = "string"
   description = "Override stackname path to infra_database_backups_bucket remote state"
@@ -193,6 +198,15 @@ resource "aws_route53_record" "mongo_2_service_record" {
   type    = "A"
   records = ["${var.mongo_2_ip}"]
   ttl     = 300
+}
+
+resource "aws_route53_record" "mongo_internal_service_names" {
+  count   = "${length(var.mongo_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.mongo_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.mongo_internal_service_names, count.index)}.${var.stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
 }
 
 module "mongo-2" {
