@@ -1,0 +1,4 @@
+bucket  = "govuk-terraform-steppingstone-test"
+key     = "pink/app-frontend.tfstate"
+encrypt = true
+region  = "eu-west-1"
