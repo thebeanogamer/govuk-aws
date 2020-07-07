@@ -95,16 +95,6 @@ variable "bouncer_public_service_names" {
   default = []
 }
 
-variable "cache_public_service_names" {
-  type    = "list"
-  default = []
-}
-
-variable "cache_public_service_cnames" {
-  type    = "list"
-  default = []
-}
-
 variable "ckan_public_service_names" {
   type    = "list"
   default = []
@@ -251,16 +241,6 @@ variable "backend_internal_service_redirected_via_public_cnames" {
 }
 
 variable "bouncer_internal_service_names" {
-  type    = "list"
-  default = []
-}
-
-variable "cache_internal_service_names" {
-  type    = "list"
-  default = []
-}
-
-variable "cache_internal_service_cnames" {
   type    = "list"
   default = []
 }
@@ -670,96 +650,11 @@ resource "aws_route53_record" "bouncer_internal_service_names" {
   ttl     = "300"
 }
 
-#
-# Cache
-#
-
-module "cache_public_lb" {
-  source                                     = "../../modules/aws/lb"
-  name                                       = "${var.stackname}-cache-public"
-  internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-  access_logs_bucket_prefix                  = "elb/${var.stackname}-cache-public-elb"
-  listener_certificate_domain_name           = "${var.elb_public_certname}"
-  listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
-  listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
-  subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_cache_external_elb_id}"]
-  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  default_tags                               = "${map("Project", var.stackname, "aws_migration", "cache", "aws_environment", var.aws_environment)}"
-}
-
 resource "aws_wafregional_web_acl_association" "cache_public_web_acl" {
   resource_arn = "${module.cache_public_lb.lb_id}"
   web_acl_id   = "${aws_wafregional_web_acl.default.id}"
 }
 
-resource "aws_shield_protection" "cache_public_web_acl" {
-  name         = "${var.stackname}-cache-public"
-  resource_arn = "${module.cache_public_lb.lb_id}"
-}
-
-resource "aws_route53_record" "cache_public_service_names" {
-  count   = "${length(var.cache_public_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
-  name    = "${element(var.cache_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
-  type    = "A"
-
-  alias {
-    name                   = "${module.cache_public_lb.lb_dns_name}"
-    zone_id                = "${module.cache_public_lb.lb_zone_id}"
-    evaluate_target_health = true
-  }
-}
-
-resource "aws_route53_record" "cache_public_service_cnames" {
-  count   = "${length(var.cache_public_service_cnames)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
-  name    = "${element(var.cache_public_service_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
-  type    = "CNAME"
-  records = ["${element(var.cache_public_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"]
-  ttl     = "300"
-}
-
-module "cache_public_lb_rules" {
-  source                 = "../../modules/aws/lb_listener_rules"
-  name                   = "cache"
-  autoscaling_group_name = "${data.aws_autoscaling_group.cache.name}"
-  rules_host_domain      = "*"
-  vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  listener_arn           = "${module.cache_public_lb.load_balancer_ssl_listeners[0]}"
-  rules_host             = ["${compact(split(",", var.enable_lb_app_healthchecks ? join(",", var.cache_public_service_cnames) : ""))}"]
-  default_tags           = "${map("Project", var.stackname, "aws_migration", "cache", "aws_environment", var.aws_environment)}"
-}
-
-data "aws_autoscaling_group" "cache" {
-  name = "${var.app_stackname}-cache"
-}
-
-resource "aws_autoscaling_attachment" "cache_asg_attachment_alb" {
-  count                  = "${data.aws_autoscaling_group.cache.name != "" ? 1 : 0}"
-  autoscaling_group_name = "${data.aws_autoscaling_group.cache.name}"
-  alb_target_group_arn   = "${element(module.cache_public_lb.target_group_arns, 0)}"
-}
-
-resource "aws_route53_record" "cache_internal_service_names" {
-  count   = "${length(var.cache_internal_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(var.cache_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "CNAME"
-  records = ["${element(var.cache_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
-}
-
-resource "aws_route53_record" "cache_internal_service_cnames" {
-  count   = "${length(var.cache_internal_service_cnames)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(var.cache_internal_service_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "CNAME"
-  records = ["${element(var.cache_internal_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
-}
 
 # Calculators-frontend
 
