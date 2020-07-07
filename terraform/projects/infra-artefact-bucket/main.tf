@@ -77,6 +77,12 @@ variable "stackname" {
   description = "Stackname"
 }
 
+variable "app_stackname" {
+  type        = "string"
+  description = "Application stackname, e.g. blue, pink, green"
+  default     = "blue"
+}
+
 variable "remote_state_bucket" {
   type        = "string"
   description = "S3 bucket we store our terraform state in"
@@ -390,7 +396,7 @@ resource "aws_iam_policy_attachment" "artefact_writer" {
   name       = "artefact-writer-policy-attachment"
   users      = ["${aws_iam_user.artefact_writer.name}"]
   policy_arn = "${aws_iam_policy.artefact_writer.arn}"
-  roles      = ["blue-deploy"]
+  roles      = ["${var.app_stackname}-deploy"]
 }
 
 data "template_file" "artefact_writer_policy_template" {
