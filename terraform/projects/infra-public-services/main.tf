@@ -447,7 +447,7 @@ resource "aws_route53_record" "apt_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.apt_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.apt_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.apt_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -460,7 +460,7 @@ resource "aws_route53_record" "asset_master_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.asset_master_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.asset_master_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.asset_master_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -562,7 +562,7 @@ resource "aws_route53_record" "backend_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.backend_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.backend_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.backend_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -631,7 +631,7 @@ data "aws_autoscaling_groups" "bouncer" {
 
   filter {
     name   = "value"
-    values = ["blue-bouncer"]
+    values = ["${var.app_stackname}-bouncer"]
   }
 }
 
@@ -646,7 +646,7 @@ resource "aws_route53_record" "bouncer_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.bouncer_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.bouncer_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.bouncer_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -663,7 +663,7 @@ resource "aws_route53_record" "calculators_frontend_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.calculators_frontend_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.calculators_frontend_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.calculators_frontend_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -726,7 +726,7 @@ data "aws_autoscaling_groups" "ckan" {
 
   filter {
     name   = "value"
-    values = ["blue-ckan"]
+    values = ["${var.app_stackname}-ckan"]
   }
 }
 
@@ -741,7 +741,7 @@ resource "aws_route53_record" "ckan_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.ckan_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.ckan_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.ckan_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -763,7 +763,7 @@ resource "aws_route53_record" "content_data_api_db_admin_internal_service_names"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.content_data_api_db_admin_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.content_data_api_db_admin_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.content_data_api_db_admin_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -776,7 +776,7 @@ resource "aws_route53_record" "content_data_api_postgresql_internal_service_name
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.content_data_api_postgresql_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.content_data_api_postgresql_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.content_data_api_postgresql_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -824,7 +824,7 @@ data "aws_autoscaling_groups" "content-store" {
 
   filter {
     name   = "value"
-    values = ["blue-content-store"]
+    values = ["${var.app_stackname}-content-store"]
   }
 }
 
@@ -839,7 +839,7 @@ resource "aws_route53_record" "content_store_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.content_store_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.content_store_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.content_store_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -850,7 +850,7 @@ resource "aws_route53_record" "db_admin_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.db_admin_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.db_admin_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.db_admin_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -908,7 +908,7 @@ resource "aws_route53_record" "deploy_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.deploy_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.deploy_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.deploy_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -921,7 +921,7 @@ resource "aws_route53_record" "docker_management_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.docker_management_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.docker_management_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.docker_management_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -934,7 +934,7 @@ resource "aws_route53_record" "draft_content_store_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.draft_content_store_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.draft_content_store_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.draft_content_store_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -947,7 +947,7 @@ resource "aws_route53_record" "draft_frontend_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.draft_frontend_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.draft_frontend_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.draft_frontend_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -969,7 +969,7 @@ resource "aws_route53_record" "elasticsearch6_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.elasticsearch6_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.elasticsearch6_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.elasticsearch6_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -1015,7 +1015,7 @@ data "aws_autoscaling_groups" "email_alert_api" {
 
   filter {
     name   = "value"
-    values = ["blue-email-alert-api"]
+    values = ["${var.app_stackname}-email-alert-api"]
   }
 }
 
@@ -1030,7 +1030,7 @@ resource "aws_route53_record" "email_alert_api_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.email_alert_api_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.email_alert_api_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.email_alert_api_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -1080,7 +1080,7 @@ data "aws_autoscaling_groups" "frontend" {
 
   filter {
     name   = "value"
-    values = ["blue-frontend"]
+    values = ["${var.app_stackname}-frontend"]
   }
 }
 
@@ -1099,7 +1099,7 @@ resource "aws_route53_record" "frontend_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.frontend_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.frontend_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.frontend_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -1144,7 +1144,7 @@ data "aws_autoscaling_groups" "prometheus" {
 
   filter {
     name   = "value"
-    values = ["blue-prometheus-1"]
+    values = ["${var.app_stackname}-prometheus-1"]
   }
 }
 
@@ -1189,7 +1189,7 @@ resource "aws_route53_record" "prometheus_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.prometheus_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.prometheus_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.prometheus_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -1233,7 +1233,7 @@ resource "aws_route53_record" "graphite_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.graphite_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.graphite_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.graphite_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -1401,7 +1401,7 @@ data "aws_autoscaling_groups" "licensify_frontend" {
 
   filter {
     name   = "value"
-    values = ["blue-licensify-frontend"]
+    values = ["${var.app_stackname}-licensify-frontend"]
   }
 }
 
@@ -1416,7 +1416,7 @@ resource "aws_route53_record" "licensify_frontend_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.licensify_frontend_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.licensify_frontend_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.licensify_frontend_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -1545,7 +1545,7 @@ data "aws_autoscaling_groups" "mapit-1" {
 
   filter {
     name   = "value"
-    values = ["blue-mapit-1"]
+    values = ["${var.app_stackname}-mapit-1"]
   }
 }
 
@@ -1563,7 +1563,7 @@ data "aws_autoscaling_groups" "mapit-2" {
 
   filter {
     name   = "value"
-    values = ["blue-mapit-2"]
+    values = ["${var.app_stackname}-mapit-2"]
   }
 }
 
@@ -1578,7 +1578,7 @@ resource "aws_route53_record" "mapit_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.mapit_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.mapit_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.mapit_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -1651,7 +1651,7 @@ resource "aws_route53_record" "monitoring_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.monitoring_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${var.monitoring_internal_service_names_cname_dest}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${var.monitoring_internal_service_names_cname_dest}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -1664,7 +1664,7 @@ resource "aws_route53_record" "mysql_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.mysql_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.mysql_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.mysql_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -1677,7 +1677,7 @@ resource "aws_route53_record" "postgresql_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.postgresql_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.postgresql_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.postgresql_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -1690,7 +1690,7 @@ resource "aws_route53_record" "publishing_api_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.publishing_api_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.publishing_api_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.publishing_api_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -1703,7 +1703,7 @@ resource "aws_route53_record" "rabbitmq_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.rabbitmq_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.rabbitmq_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.rabbitmq_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -1720,7 +1720,7 @@ data "aws_autoscaling_groups" "search" {
 
   filter {
     name   = "value"
-    values = ["blue-search"]
+    values = ["${var.app_stackname}-search"]
   }
 }
 
@@ -1729,7 +1729,7 @@ resource "aws_route53_record" "search_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.search_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.search_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.search_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -1844,7 +1844,7 @@ data "aws_autoscaling_groups" "static" {
 
   filter {
     name   = "value"
-    values = ["blue-frontend"]
+    values = ["${var.app_stackname}-frontend"]
   }
 }
 
@@ -1905,7 +1905,7 @@ resource "aws_route53_record" "transition_db_admin_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.transition_db_admin_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.transition_db_admin_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.transition_db_admin_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -1918,7 +1918,7 @@ resource "aws_route53_record" "transition_postgresql_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.transition_postgresql_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.transition_postgresql_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.transition_postgresql_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -1987,7 +1987,7 @@ data "aws_autoscaling_groups" "whitehall_backend" {
 
   filter {
     name   = "value"
-    values = ["blue-whitehall-backend"]
+    values = ["${var.app_stackname}-whitehall-backend"]
   }
 }
 
@@ -2056,7 +2056,7 @@ data "aws_autoscaling_groups" "whitehall_frontend" {
 
   filter {
     name   = "value"
-    values = ["blue-whitehall-frontend"]
+    values = ["${var.app_stackname}-whitehall-frontend"]
   }
 }
 
@@ -2072,7 +2072,7 @@ resource "aws_route53_record" "draft_whitehall_frontend_internal_service_names" 
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.draft_whitehall_frontend_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.whitehall_frontend_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.whitehall_frontend_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -2081,7 +2081,7 @@ resource "aws_route53_record" "whitehall_frontend_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.whitehall_frontend_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.whitehall_frontend_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.whitehall_frontend_internal_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -2090,6 +2090,6 @@ resource "aws_route53_record" "draft_content_store_public_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
   name    = "${element(var.draft_content_store_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.draft_content_store_public_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"]
+  records = ["${element(var.draft_content_store_public_service_names, count.index)}.${var.app_stackname}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"]
   ttl     = "300"
 }
