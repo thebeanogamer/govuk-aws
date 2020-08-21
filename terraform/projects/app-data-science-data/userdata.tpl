@@ -30,12 +30,12 @@ sudo apt install -y libpq-dev
 
 sudo su - ubuntu
 
-## Set-up BigQuery access
-big_query_key_file=$(/usr/local/bin/aws ssm get-parameter --name govuk_big_query_data_service_user_key_file --query "Parameter.Value" --region eu-west-1 --with-decryption | jq -r '.')
+# ## Set-up BigQuery access
+# big_query_key_file=$(/usr/local/bin/aws ssm get-parameter --name govuk_big_query_data_service_user_key_file --query "Parameter.Value" --region eu-west-1 --with-decryption | jq -r '.')
 
-# Store Big Query credentials
-echo $big_query_key_file > /var/tmp/bigquery.json
-chmod 400 /var/tmp/bigquery.json
+# # Store Big Query credentials
+# echo $big_query_key_file > /var/tmp/bigquery.json
+# chmod 400 /var/tmp/bigquery.json
 
 # Create Python 3.6 virtual environment
 cd /var
@@ -52,37 +52,37 @@ sudo chown -R ubuntu:ubuntu /var/data
 sudo chmod g+s /var/data
 cd /var/data
 
-# Install MongoDB
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+# # Install MongoDB
+# sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
 
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
+# echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
 
-sudo apt-get update -y
-sudo apt-get install -y mongodb-org
-sudo service mongod start
+# sudo apt-get update -y
+# sudo apt-get install -y mongodb-org
+# sudo service mongod start
 
-# Get content store backup
-echo "Finding latest content backup..."
-LATEST_CONTENT_BACKUP_PATH=$(aws s3api list-objects-v2 --bucket ${database_backups_bucket_name} --prefix mongo-api --query "Contents[?contains(Key, '-content_store_production.gz')]" | jq  -c "max_by(.LastModified)|.Key" | xargs)
+# # Get content store backup
+# echo "Finding latest content backup..."
+# LATEST_CONTENT_BACKUP_PATH=$(aws s3api list-objects-v2 --bucket ${database_backups_bucket_name} --prefix mongo-api --query "Contents[?contains(Key, '-content_store_production.gz')]" | jq  -c "max_by(.LastModified)|.Key" | xargs)
 
-echo "Downloading latest content store backup..."
-aws s3 cp s3://${database_backups_bucket_name}/$LATEST_CONTENT_BACKUP_PATH /var/data/latest_content_store_backup.gz
+# echo "Downloading latest content store backup..."
+# aws s3 cp s3://${database_backups_bucket_name}/$LATEST_CONTENT_BACKUP_PATH /var/data/latest_content_store_backup.gz
 
-# Extract content store backup
-cd /var/data
-tar -xvf latest_content_store_backup.gz
-ls -lat content_store_production
+# # Extract content store backup
+# cd /var/data
+# tar -xvf latest_content_store_backup.gz
+# ls -lat content_store_production
 
-# Restore content store data to MongoDb
-mongorestore -d content_store -c content_items /var/data/content_store_production/content_items.bson
+# # Restore content store data to MongoDb
+# mongorestore -d content_store -c content_items /var/data/content_store_production/content_items.bson
 
 # Get Github deploy key and update permissions
-/usr/local/bin/aws ssm get-parameter --name govuk_knowledge_graph_github_deploy_key --query "Parameter.Value" --region eu-west-1 --with-decryption | jq -r '.' > kg_id_rsa
-chmod 600 kg_id_rsa
+/usr/local/bin/aws ssm get-parameter --name govuk_accessibility_reports_github_deploy_key --query "Parameter.Value" --region eu-west-1 --with-decryption | jq -r '.' > kg_id_rsa
+chmod 600 accessibility_reports_id_rsa
 
 # Add Github deploy key to ssh agent
 eval `ssh-agent -s`
-ssh-add /var/data/kg_id_rsa
+ssh-add /var/data/accessibility_reports_id_rsa
 
 # Accept Github SSH fingerprint
 ssh -T git@github.com -o StrictHostKeyChecking=no
@@ -90,17 +90,5 @@ ssh -T git@github.com -o StrictHostKeyChecking=no
 # Download knowledge graph repo
 mkdir /var/data/github
 cd /var/data/github
-git clone git@github.com:alphagov/govuk-knowledge-graph.git
+git clone git@github.com:alphagov/govuk-accessibility-reports.git
 
-# Set correct permissions for build data script
-cd govuk-knowledge-graph
-chmod +x ./build_knowledge_graph_data
-
-# Run knowledge graph build script
-touch /var/tmp/data_generation_process.log
-./build_knowledge_graph_data -d ${data_infrastructure_bucket_name} > /var/tmp/data_generation_process.log
-
-# Copy logs across to S3
-date_today=$(date '+%F')
-aws s3 cp /var/tmp/data_generation_process.log s3://${data_infrastructure_bucket_name}/knowledge-graph/$date_today/data_generation_process.log
-aws s3 cp /var/log/cloud-init-output.log s3://${data_infrastructure_bucket_name}/knowledge-graph/$date_today/cloud-init-output.log
