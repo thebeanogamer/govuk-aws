@@ -683,6 +683,40 @@ data "aws_iam_policy_document" "production_graphite_database_backups_reader" {
   }
 }
 
+### Define Reader Policy for GCP database access
+resource "aws_iam_policy" "staging_gcp_database_backups_reader" {
+  name        = "govuk-staging-gcp_database_backups-reader-policy"
+  policy      = "${data.aws_iam_policy_document.staging_gcp_database_backups_reader.json}"
+  description = "Allows reading the staging database_backups bucket for GCP backups"
+}
+
+data "aws_iam_policy_document" "staging_gcp_database_backups_reader" {
+  statement {
+    sid = "GCPReadStagingDatabaseBucket"
+
+    actions = [
+      "s3:Get*",
+      "s3:List*",
+    ]
+
+    # Need access to the top level of the tree.
+    resources = [
+      "arn:aws:s3:::govuk-staging-database-backups",
+      "arn:aws:s3:::govuk-staging-database-backups/*",
+    ]
+  }
+}
+
+resource "aws_iam_user" "govuk_gcp_database_backups_reader" {
+  name = "govuk_gcp_database_backups_reader"
+}
+
+resource "aws_iam_policy_attachment" "govuk_gcp_database_backups_reader_policy_attachment" {
+  name       = "s3-gcp-database-backups-reader-policy-attachment"
+  users      = ["${aws_iam_user.govuk_gcp_database_backups_reader.name}"]
+  policy_arn = "${aws_iam_policy.govuk_gcp_database_backups_reader.arn}"
+}
+
 output "integration_mongo_api_read_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.integration_mongo_api_database_backups_reader.arn}"
   description = "ARN of the integration read mongo-api database_backups-bucket policy"
@@ -771,6 +805,11 @@ output "staging_email-alert-api_dbadmin_read_database_backups_bucket_policy_arn"
 output "staging_graphite_read_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.staging_graphite_database_backups_reader.arn}"
   description = "ARN of the staging read Graphite database_backups-bucket policy"
+}
+
+output "staging_gcp_database_backups_reader_policy_arn" {
+  value       = "${aws_iam_policy.staging_gcp_database_backups_reader.arn}"
+  description = "ARN of the staging read GCP database_backups-bucket policy"
 }
 
 output "production_mongo_api_read_database_backups_bucket_policy_arn" {

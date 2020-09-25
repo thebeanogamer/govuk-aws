@@ -74,6 +74,7 @@ database-backups: The bucket that will hold database backups
 | staging\_dbadmin\_read\_database\_backups\_bucket\_policy\_arn | ARN of the staging read DBAdmin database\_backups-bucket policy |
 | staging\_elasticsearch\_read\_database\_backups\_bucket\_policy\_arn | ARN of the staging read elasticsearch database\_backups-bucket policy |
 | staging\_email-alert-api\_dbadmin\_read\_database\_backups\_bucket\_policy\_arn | ARN of the staging read EmailAlertAPUDBAdmin database\_backups-bucket policy |
+| staging\_gcp\_database\_backups\_reader\_policy\_arn | ARN of the staging read GCP database\_backups-bucket policy |
 | staging\_graphite\_read\_database\_backups\_bucket\_policy\_arn | ARN of the staging read Graphite database\_backups-bucket policy |
 | staging\_mongo\_api\_read\_database\_backups\_bucket\_policy\_arn | ARN of the staging read mongo-api database\_backups-bucket policy |
 | staging\_mongo\_router\_read\_database\_backups\_bucket\_policy\_arn | ARN of the staging read router\_backend database\_backups-bucket policy |
